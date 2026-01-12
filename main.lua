@@ -10,7 +10,8 @@ function love.load()
 	-- 2- game is playing
 	gameState = 1
 
-	gameFont = love.graphics.newFont(40)
+	gameFont = love.graphics.newFont("fonts/Satoshi-Variable.ttf", 30, "normal", 2)
+	ingameFont = love.graphics.newFont("fonts/Satoshi-Variable.ttf", 20, "normal", 2)
 
 	sprites = {}
 	sprites.sky = love.graphics.newImage("sprites/sky.png")
@@ -34,16 +35,18 @@ end
 function love.draw()
 	love.graphics.draw(sprites.sky, 0, 0)
 
-	love.graphics.setColor(1, 1, 1)
-	love.graphics.setFont(gameFont)
-	love.graphics.print("Score: " .. score, 5, 5)
-	love.graphics.print("Time: " .. math.ceil(timer), love.graphics.getWidth() - 300, 0)
-
 	if gameState == 1 then
+		love.graphics.setFont(gameFont)
 		love.graphics.printf("Click anywhere to begin!", 0, 250, love.graphics.getWidth(), "center")
 	end
 
 	if gameState == 2 then
+		love.graphics.setColor(1, 1, 1)
+		love.graphics.setFont(ingameFont)
+		love.graphics.print("Score: " .. score, 5, 5)
+		local text = "Time: " .. math.ceil(timer)
+		local textW = ingameFont:getWidth(text)
+		love.graphics.print(text, love.graphics.getWidth() - textW - 5, 5)
 		love.graphics.draw(sprites.target, target.x - target.radius, target.y - target.radius)
 	end
 	love.graphics.draw(sprites.crosshairs, love.mouse.getX() - 20, love.mouse.getY() - 20)
