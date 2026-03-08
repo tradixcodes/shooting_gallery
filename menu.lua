@@ -16,8 +16,8 @@ function menuDraw()
 	local w = love.graphics.getWidth()
 	local h = love.graphics.getHeight()
 
-	for i, options in ipairs(options) do
-		local y = h / 2 + i * 40
+	for i, option in ipairs(options) do
+		local y = (h / 2) / 2 + i * 40
 
 		if i == selected then
 			love.graphics.setColor(1, 1, 0)
@@ -32,21 +32,20 @@ function menuDraw()
 end
 
 function menuKeypressed(key)
-	if key == "up" then
+	if key == "w" or key == "up" then
 		selected = selected - 1
 		if selected < 1 then
 			selected = #options
 		end
-	elseif key == "down" then
+	elseif key == "s" or key == "down" then
 		selected = selected + 1
 		if selected > #options then
 			selected = 1
 		end
 	elseif key == "return" then
-		if options[selected] == "Start Game" then
-			gameState = "game"
-			gameLoad()
-		elseif options[selected] == "Quit" then
+		if selected == 1 then
+			gameState = 2
+		elseif selected == #options then
 			love.event.quit()
 		end
 	end

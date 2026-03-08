@@ -1,10 +1,15 @@
+require("menu")
+
 function love.load()
+	menuLoad()
+
 	target = {}
 	target.x = 300
 	target.y = 300
 	target.radius = 50
 
 	score = 0
+	highScore = 0
 	timer = 0
 	-- 1- main menu
 	-- 2- game is playing
@@ -22,13 +27,22 @@ function love.load()
 end
 
 function love.update(dt)
-	if timer > 0 then
-		timer = timer - dt
+	if gameState == 1 then
+		menuUpdate(dt)
 	end
 
-	if timer < 0 then
-		timer = 0
-		gameState = 1
+	if gameState == 2 then
+		if timer > 0 then
+			timer = timer - dt
+		end
+
+		if timer <= 0 then
+			timer = 0
+			gameState = 1
+			if score > highScore then
+				highScore = score
+			end
+		end
 	end
 end
 
@@ -36,8 +50,7 @@ function love.draw()
 	love.graphics.draw(sprites.sky, 0, 0)
 
 	if gameState == 1 then
-		love.graphics.setFont(gameFont)
-		love.graphics.printf("Click anywhere to begin!", 0, 250, love.graphics.getWidth(), "center")
+		menuDraw()
 	end
 
 	if gameState == 2 then
@@ -47,6 +60,7 @@ function love.draw()
 		local text = "Time: " .. math.ceil(timer)
 		local textW = ingameFont:getWidth(text)
 		love.graphics.print(text, love.graphics.getWidth() - textW - 5, 5)
+		love.graphics.printf("High Score: " .. highScore, 5, 0, love.graphics.getWidth(), "center")
 		love.graphics.draw(sprites.target, target.x - target.radius, target.y - target.radius)
 	end
 	love.graphics.draw(sprites.crosshairs, love.mouse.getX() - 20, love.mouse.getY() - 20)
@@ -60,8 +74,12 @@ function love.mousepressed(x, y, button, istouch, presses)
 			target.x = math.random(target.radius, love.graphics.getWidth() - target.radius)
 			target.y = math.random(target.radius, love.graphics.getHeight() - target.radius)
 		end
-	elseif button == 1 and gameState == 1 then
-		gameState = 2
+	end
+end
+
+function love.keypressed(key)
+	if gameState == 1 then
+		menuKeypressed(key)
 		timer = 10
 		score = 0
 	end
